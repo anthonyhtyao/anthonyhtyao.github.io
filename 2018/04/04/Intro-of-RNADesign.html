@@ -14,8 +14,8 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
     <link rel="stylesheet" href="/css/main.css ">
-    <link rel="canonical" href="http://localhost:4000/2018/04/04/Intro-of-RNADesign.html">
-    <link rel="alternate" type="application/rss+xml" title="ATCG <-> 1/0" href="http://localhost:4000/feed.xml ">
+    <link rel="canonical" href="/2018/04/04/Intro-of-RNADesign.html">
+    <link rel="alternate" type="application/rss+xml" title="ATCG <-> 1/0" href="/feed.xml ">
 
 
 
@@ -164,9 +164,13 @@
 
 <p>就如同多數的逆問題, 逆RNA折疊 (inverse RNA folding, or RNA Design) 並不符合<a href="https://zh.wikipedia.org/zh-tw/%E9%81%A9%E5%AE%9A%E6%80%A7%E5%95%8F%E9%A1%8C">適定性問題</a>的定義,也因此充滿挑戰性。給定一條RNA序列,找到其最低能量二維折疊複雜度是 $O(n^3)$,反過來卻不是如此簡單,給定一個RNA二維結構,我們想要設計一條RNA序列,使得其最低能量折疊符合給定的結構。一個直覺又暴力的方法是找出所有可能序列的折疊,期待其中一個符合我們想要的，假設要設計一條長度$n$的RNA序列,每個位置都有四種可能(A,U,C,G),也就是說總共有$4^n$條可能序列。當然考慮到成對的鹼基,我們可以近一步的減少這個數量,假設其中有m ($2m\leq n$)個鹼基對 (A-U, C-G, U-G),可惜的是還剩下$6^m4^{n-2m}$條可能的RNA序列。很顯然,在目前的技術之下,暴力解不是一個可行的方法。</p>
 
-<ol class="bibliography"><li><span id="Churkin2017">Churkin, A., Retwitzer, M. D., Reinharz, V., Ponty, Y., Waldispühl, J., &amp; Barash, D. (2017). Design of RNAs: comparing programs for inverse 
-RNA folding. <i>Briefings in Bioinformatics</i>, bbw120. https://doi.org/10.1093/bib/bbw120</span></li></ol>
 
+	
+        <hr>
+	
+	  <ol class="bibliography"><li><span id="Churkin2017">Churkin, A., Retwitzer, M. D., Reinharz, V., Ponty, Y., Waldispühl, J., &amp; Barash, D. (2017). Design of RNAs: comparing programs for inverse 
+RNA folding. <i>Briefings in Bioinformatics</i>, bbw120. https://doi.org/10.1093/bib/bbw120</span></li></ol>
+	
         </article>
         <hr>
 
