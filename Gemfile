@@ -22,8 +22,10 @@ gem "jekyll", "3.5.2"
 group :jekyll_plugins do
    gem "jekyll-feed", "~> 0.6"
    gem "github-pages"
+   gem "jekyll-scholar"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
+gem 'unicode_utils', '~> 1.4.0'
