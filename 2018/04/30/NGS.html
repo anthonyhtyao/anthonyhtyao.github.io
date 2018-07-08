@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>次代定序技術(Next Generation Sequencing)</title>
+    <meta name="description" content="次代定序技術 (Next Generation Sequencing) 為 Illumina 定序、SOLiD 定序等等新一代定序技術的統稱，與過往 Sanger 定序相比，能夠以較少的時間、金錢完成大量的序列定序。新技術的出現大幅影響分子生物學的研究，許多相應的應用因而相繼出現：">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="http://localhost:4000/2018/04/30/NGS.html">
+    <link rel="alternate" type="application/rss+xml" title="ATCG <-> 1/0" href="http://localhost:4000/feed.xml ">
+
+
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">ATCG <-> 1/0</a>
+        <small></small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>次代定序技術(Next Generation Sequencing)</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-04-30
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>htyao
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <p>次代定序技術 (Next Generation Sequencing) 為 Illumina 定序、SOLiD 定序等等新一代定序技術的統稱，
+與過往 Sanger 定序相比，能夠以較少的時間、金錢完成大量的序列定序。
+新技術的出現大幅影響分子生物學的研究，許多相應的應用因而相繼出現：</p>
+
+<ul>
+  <li>DNA-seq
+    <ul>
+      <li>目標外顯子(100 kb)</li>
+      <li>全部外顯子(30 Mb)</li>
+      <li>整段序列(3 Gb)</li>
+    </ul>
+  </li>
+  <li>RNA-seq</li>
+  <li>
+    <p>ChiP-seq</p>
+
+    <p>結合<a href="https://zh.wikipedia.org/zh-tw/%E6%9F%93%E8%89%B2%E8%B4%A8%E5%85%8D%E7%96%AB%E6%B2%89%E6%B7%80-%E6%B5%8B%E5%BA%8F">染色質免疫沈澱</a>(Chromatin Immunoprecipitation)，可用來辨識蛋白質在基因上的結合位置。</p>
+  </li>
+  <li>Hi-C</li>
+</ul>
+
+<p>傳統的人工分析不再足以應付如此龐大的資料，資訊科學逐漸在生物學中得到重視。
+本文章將簡單介紹資訊科學如何幫助處理和分析定序的資料，主要著重於 RNA-seq 和 DNA-seq 這兩個技術。
+首先我們會介紹這兩個技術的應用以及後續分析的流程，接著會分別簡短描述每一個步驟所用到的工具，會在之後的文章詳細介紹各個工具，最後會列出一些常用的檔案格式。</p>
+
+<h1 id="rna-seq">RNA-seq</h1>
+
+<h2 id="定序品質管理quality-control">定序品質管理(Quality control)</h2>
+
+<p>定序的品質主要基於定序分數(Phred quality score)，但也會根據序列片段的長度分佈、GC%、重複定序序列等等依據。
+定序品質分數$Q$越高代表該鹼基定序結果準確率越高，
+$Q = -\log P$，其中 $P$ 代表定序結果錯誤的機率。
+根據不同的技術，有時在定序序列尾端會有一小段已知的序列，稱作adapter，在定序時被用來固定序列片段，也被用來在PCR中增加特定序列。因此在定序完成後，需要將adapter從片段序列中剪去，已知的軟體有 <strong>Cutadapt</strong> 和 <strong>Trimmomatic</strong>。</p>
+
+<p>分析品質分數的方法主要分成兩種，通常使用 <strong>Fastqc</strong> 視覺化：</p>
+
+<ul>
+  <li>使用箱形圖(Box Whisker plot)呈現每一個位置鹼基定序分數的分佈情況，一般情況下，位於後端的鹼基會有較低的定序準確率，可以使用 <strong>FastqTrimmer</strong> 去除尾端低品質序列</li>
+  <li>利用片段序列平均分數的分佈(mean quality distribution)來尋找是否有一批片段序列準確率集體偏低</li>
+</ul>
+
+<h2 id="序列比對mappingalignment">序列比對(Mapping/Alignment)</h2>
+
+<p>序列比對：在合理的誤差範圍內，找到每個片段序列所對應的所有基因座(locus)</p>
+
+<ul>
+  <li><strong>BLAST</strong> 是一個常見的序列比對工具，使用$k$-mer</li>
+  <li>Suffix array</li>
+  <li>Burrow-Wheeler Transform(BWT) 壓縮版的suffix array，有許多工具建立在此方法上，其中以 <strong>Bowti</strong> 最為知名</li>
+</ul>
+
+<p>在RNA-seq分析中，由於mRNA指包含外顯子的序列，所以序列比對工具比需具有處理內顯子存在的可能性，也就是說要能夠將得到的片段序列分段並對應到數個外顯子。</p>
+
+<ul>
+  <li><strong>TopHat</strong></li>
+  <li><strong>STAR</strong></li>
+</ul>
+
+<h2 id="表現結果expression">表現結果(Expression)</h2>
+
+<p>做完序列比對後，接著要分析基因的表現量，最直覺的方法就是數有多少片段序列對到基因，但現實情況卻不是如此簡單</p>
+
+<p>在開始之前需要先將比對結果索引化(indexing)，將比對結果依照位置排序並建立位置表，儲存於<a href="#bai">.BAI</a>中</p>
+
+<p><strong>featureCounts</strong> 回傳每個特徵所對應到的片段序列數量，但是基於featureCount的方法無法準確表示出，在兩個不同情況下，表現量的改變</p>
+
+<p>近幾年，一些不使用比對的方法被提了出來，像是 <strong>Sailfish</strong>, <strong>Salmon</strong> 還有 <strong>Kallisto</strong></p>
+
+<h2 id="表現差異分析differential-expression-analyses">表現差異分析(Differential expression analyses)</h2>
+
+<p>假設我們想要知道在兩個不同的條件下，哪些基因有不一樣的表現，因此分別在這兩個條件下做了定序，得到了所有基因的表現量$Q1$和$Q2$，</p>
+
+<p>第一步要先將得到的表現量正規化，因為對應到的片段序列數量跟基因長度以及整體片段序列數量有關</p>
+
+<p>假設：大多數的基因其表現量沒有改變，$\log FC = 0$</p>
+
+<p>但是$\log FC$不能作為唯一的依據，一個表現量標準差很大的基因可以和一個標準差很小的基因擁有一樣的$\log FC$值。其中一個解決方法是使用student參數$t = \displaystyle \frac{\log FC}{\frac{SD}{\sqrt{n}}}$， R package <strong>LIMMA</strong>。</p>
+
+<p>在統計學中，$p$-值常被用作評判的標準。在此分析中可以假設片段序列對應到一個基因的數量符合某個統計模型，並藉此計算$p$-值。給定一條片段序列跟一個基因，假設兩者成功比對的機率為$p$，那麼一個基因的對應片段序列數量會成二項分佈$B(n,p)$，其中$n$是總片段序列數量。當$n$夠大以及$p$夠小時，會接近Poisson分佈。此模型的優點是只有一個參數$\lambda$，而其特性為期望值等於方差(variance)，$E(X)=V(X)=\lambda$。跟實際情況相比，可以發現，此模型會低估高表現基因的方差，有幾個方法可以來修正此誤差：</p>
+
+<ul>
+  <li>加入常數項，$\nu = \mu + \alpha\mu^2$，package <strong>DESeq</strong></li>
+  <li>加入區域遞迴，$\nu = \mu + f(\mu^2)$， package <strong>edgeR</strong></li>
+</ul>
+
+<h2 id="dna-seq">DNA-seq</h2>
+
+<p>用於尋找基因體上的差異：</p>
+
+<ul>
+  <li>Genetic constitution. GWA studies, 1000 Genome project</li>
+  <li>體基因：比對癌症患者正常細胞和癌細胞基因，找尋變異、突變，有100-10000單核苷酸差異(SNV)</li>
+</ul>
+
+<p>流程：定序後資料(Fastq) -&gt; 跟目標序列比對，得到Sam/Bam -&gt; 尋找變異(Variant calling)，以VCF格式輸出</p>
+
+<p>開始的前製資料處理與RNA-seq相同，品質管理、序列比對。</p>
+
+<h3 id="交叉比對">交叉比對</h3>
+<p>做完比對後，需要將得到的結果與已知的基因體位製作交叉比對，通常使用<a href="https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html">bedtools</a></p>
+
+<h3 id="重新對準序列realignment">重新對準序列(realignment)</h3>
+
+<p>序列比對工具會傾向引入單核酸差異而不會選擇插入/刪除(indel)鹼基，進而產生大量的假單核酸差異(false positive)，所以必須在插入/刪除位置附近重新比對序列。常見的重新排列位置有：</p>
+
+<ul>
+  <li>在第一次比對中，已有插入/刪除的地方</li>
+  <li>明顯意味存在插入/刪除的位置，像是大量序列存在單核酸差異的地方</li>
+  <li>已知存在插入/刪除的位置(dbSNP，1000Genomes)</li>
+</ul>
+
+<p>常見的方法是先使用 <strong>GATK RealignerTargetCreator</strong> 辨識出需要重新比對的區域，再使用 <strong>GATK IndelRealigner</strong> 做重新對準。</p>
+
+<p>接著要來準備給variant calling的資料，使用 <code class="highlighter-rouge">samtools mpileup</code>通常為Pileup格式，每一行代表一個位置的鹼基配對結果，每一行有六欄：</p>
+
+<ul>
+  <li>染色體位置</li>
+  <li>鹼基所在位置</li>
+  <li>參考鹼基</li>
+  <li>比對片段序列數量(depth)</li>
+  <li>比對結果</li>
+  <li>比對品質</li>
+</ul>
+
+<h1 id="相關檔案格式">相關檔案格式</h1>
+
+<h5 id="fasta"><strong>FASTA</strong></h5>
+<p>簡易序列儲存格式，每條序列的第一行為編號 (ID，首字元為 &lt; )，
+第二行以後為序列。
+一個檔案裡可以有多條序列。</p>
+
+<h5 id="fastq"><strong>FASTQ</strong></h5>
+
+<p>用於儲存定序結果，通常為序列片段 (read)，每一條序列片段 (read) 包含四行資訊，分別為：</p>
+
+<ul>
+  <li>序列編號(ID)，首字元為@</li>
+  <li>序列</li>
+  <li>序列編號(非必須)，首字元為+</li>
+  <li>每個鹼基的定序品質分數</li>
+</ul>
+
+<h5 id="sam-sequence-alignment-map"><strong>SAM</strong> (Sequence Alignment Map)</h5>
+
+<p>用於表示跟參考序列比對後的結果，總共有11欄：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>QNAME</td>
+      <td>String</td>
+      <td>序列 Id</td>
+    </tr>
+    <tr>
+      <td>FLAG</td>
+      <td>Int</td>
+      <td>二進位標籤組合</td>
+    </tr>
+    <tr>
+      <td>RNAME</td>
+      <td>String</td>
+      <td>參考序列 Id</td>
+    </tr>
+    <tr>
+      <td>POS</td>
+      <td>Int</td>
+      <td>比對在參考序上的起始位置，起始為1</td>
+    </tr>
+    <tr>
+      <td>MAPQ</td>
+      <td>Int</td>
+      <td>序列比對品質，$-10\log P$</td>
+    </tr>
+    <tr>
+      <td>CIGAR</td>
+      <td>String</td>
+      <td>CIGAR String，用來表示序列比對詳細結果</td>
+    </tr>
+    <tr>
+      <td>RNEXT</td>
+      <td>String</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>PNEXT</td>
+      <td>Int</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>TLEN</td>
+      <td>Int</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>SEQ</td>
+      <td>String</td>
+      <td>比對的完整序列</td>
+    </tr>
+    <tr>
+      <td>QUAL</td>
+      <td>Int</td>
+      <td>比對序列定序品質分數</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="bam"><strong>BAM</strong></h5>
+
+<p>二進位版本的 SAM，使用 <strong>SAMtools</strong> 將兩者轉換</p>
+
+<h5 id="bai"><strong>BAI</strong></h5>
+
+<p>索引化的 BAM</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>samtools sort sample.bam –o sample_sorted.bam
+samtools index sample_sorted.bam
+</code></pre>
+</div>
+<h5 id="bed"><strong>bed</strong></h5>
+
+<p>用於描述基因體中的特徵(feature)，一行代表一個特徵，共有3-12欄資訊，其中前三欄為必填</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>chrom</td>
+      <td>特徵所在染色體</td>
+    </tr>
+    <tr>
+      <td>chromStart</td>
+      <td>特徵開始位置</td>
+    </tr>
+    <tr>
+      <td>chromEnd</td>
+      <td>特徵結束位置</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>需要注意的是，在bed格式中，第一個鹼基位置是0，且特徵長度 = chromEnd - chromStart</p>
+
+<p><strong>GFF</strong>(General Feature Format)</p>
+
+<p><strong>GTF</strong>(General Transfer Format)</p>
+
+<p><strong>VCF</strong></p>
+
+<p>用於紀錄 variant call 的結果，分為header和body。header的每一行開始於##，紀錄檔案相關資訊</p>
+
+	
+        <hr>
+	
+	  <ol class="bibliography"></ol>
+	
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2018/04/04/Intro-of-RNADesign.html">RNA Design</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/anthonyhtyao" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:hua-ting.yao@polytechnique.edu" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>        
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

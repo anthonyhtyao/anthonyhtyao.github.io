@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>RNA Design</title>
+    <meta name="description" content="寫於一切之前, 此文章內容主要基於2017年發表在 Briefings in Bioinformatics 的 RNA Design review (Churkin et al., 2017)">
+
+    <link rel="shortcut icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico?" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_8v3czwksspqlg14i.css">
+    <link rel="stylesheet" href="/css/main.css ">
+    <link rel="canonical" href="http://localhost:4000/2018/04/04/Intro-of-RNADesign.html">
+    <link rel="alternate" type="application/rss+xml" title="ATCG <-> 1/0" href="http://localhost:4000/feed.xml ">
+
+
+
+
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    tex2jax: { inlineMath: [["$","$"],["\\(","\\)"]] },
+    "HTML-CSS": {
+      linebreaks: { automatic: true, width: "container" }
+    }
+});
+</script>
+<script type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+</head>
+
+
+  <body>
+
+    <header id="top">
+    <div class="wrapper">
+        <a href="/" class="brand">ATCG <-> 1/0</a>
+        <small></small>
+        <button id="headerMenu" class="menu"><i class="fa fa-bars"></i></button>
+        <nav id="headerNav">
+            <ul>
+                <li>
+                    
+                    <a href="/">
+                    
+                        <i class="fa fa-home"></i>Home
+                    </a>
+                </li>
+
+                
+                    
+                    <li>
+                        
+                        <a href="/archive/">
+                        
+                            <i class="fa fa-archive"></i>Archives
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/category/">
+                        
+                            <i class="fa fa-th-list"></i>Categories
+                        </a>
+                    </li>
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/tag/">
+                        
+                            <i class="fa fa-tags"></i>Tags
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                    <li>
+                        
+                        <a href="/about/">
+                        
+                            <i class="fa fa-heart"></i>About
+                        </a>
+                    </li>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+            </ul>
+        </nav>
+    </div>
+</header>
+
+
+        <div class="page clearfix" post>
+    <div class="left">
+        <h1>RNA Design</h1>
+        <div class="label">
+
+            <div class="label-card">
+                <i class="fa fa-calendar"></i>2018-04-04
+            </div>
+
+            <div class="label-card">
+                <i class="fa fa-user"></i>htyao
+                
+            </div>
+
+            <div class="label-card">
+                
+            </div>
+
+            <div class="label-card">
+            
+
+
+
+            </div>
+
+            <div class="label-card">
+            
+<!-- <span class="point">•</span> -->
+<span class="pageTag">
+  <i class="fa fa-tags"></i>
+  
+    
+  
+
+</span>
+
+            </div>
+
+        </div>
+        <hr>
+        <article itemscope itemtype="http://schema.org/BlogPosting">
+        <p>寫於一切之前, 此文章內容主要基於2017年發表在 <em>Briefings in Bioinformatics</em> 的 RNA Design review <a href="#Churkin2017">(Churkin et al., 2017)</a></p>
+
+<blockquote>
+  <p>The class of ill-posed problems includes many classical mathematical problems and, most significantly, that such problems have important applications. 
+– Andrey Nikolayevich Tikhonov</p>
+</blockquote>
+
+<p>就如同多數的逆問題, 逆RNA折疊 (inverse RNA folding, or RNA Design) 並不符合<a href="https://zh.wikipedia.org/zh-tw/%E9%81%A9%E5%AE%9A%E6%80%A7%E5%95%8F%E9%A1%8C">適定性問題</a>的定義,也因此充滿挑戰性。給定一條RNA序列,找到其最低能量二維折疊複雜度是 $O(n^3)$,反過來卻不是如此簡單,給定一個RNA二維結構,我們想要設計一條RNA序列,使得其最低能量折疊符合給定的結構。一個直覺又暴力的方法是找出所有可能序列的折疊,期待其中一個符合我們想要的，假設要設計一條長度$n$的RNA序列,每個位置都有四種可能(A,U,C,G),也就是說總共有$4^n$條可能序列。當然考慮到成對的鹼基,我們可以近一步的減少這個數量,假設其中有m ($2m\leq n$)個鹼基對 (A-U, C-G, U-G),可惜的是還剩下$6^m4^{n-2m}$條可能的RNA序列。很顯然,在目前的技術之下,暴力解不是一個可行的方法。</p>
+
+<p>逆RNA折疊被認為在未來的合成生物學(synthetic biology)和RNA奈米結構領域中，扮演重要的角色。同時也被發現可以用來尋找非編碼核糖核酸 (non-coding RNA)。除此之外，逆RNA折疊和理論演化學也息息相關，RNA序列與結構常被用作研究模型。</p>
+
+<p>一個常見的逼近方法是先生成一段RNA序列，稱作種子序列，接著，藉由適當地改變序列，使種子序列在局部(local)空間中隨機漫步(Random Walk)，並使用現成的RNA折疊工具來逼近最終序列。此方法由被收在<a href="https://www.tbi.univie.ac.at/RNA/">ViennaRNA</a>的 <strong>RNAinverse</strong> 首次提出。之後的 <strong>INFO-RNA</strong>， <strong>NUPACK</strong> 等也是建立在類似的方法之上。除此之外，遺傳算法(genetic algorith)，約束規劃(constaint programming)以及螞蟻算法(ant colony optimization)都曾被使用來解決此問題。</p>
+
+<p>大多數的逆RNA折疊軟體中，並不考慮<a href="https://zh.wikipedia.org/zh-tw/%E5%81%87%E7%B5%90%E7%B5%90%E6%A7%8B">假結結構</a>(pseudoknot)的存在。假結結構是一種RNA二級結構，髮夾結構(hairpin loop)的其中一股嵌入另一個髮夾結構之中。</p>
+
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/PseudoknotFold.svg/307px-PseudoknotFold.svg.png" alt="假結結構的產生" /></p>
+
+
+	
+        <hr>
+	
+	  <ol class="bibliography"><li><span id="Churkin2017">Churkin, A., Retwitzer, M. D., Reinharz, V., Ponty, Y., Waldispühl, J., &amp; Barash, D. (2017). Design of RNAs: comparing programs for inverse 
+RNA folding. <i>Briefings in Bioinformatics</i>, bbw120. https://doi.org/10.1093/bib/bbw120</span></li></ol>
+	
+        </article>
+        <hr>
+
+        
+        
+            
+            
+        
+            
+            
+        
+        
+
+        <div class="post-recent">
+    <div class="pre">
+        
+        <p><strong>上一篇</strong> <a href="/2017/09/18/welcome-to-jekyll.html">Welcome to Jekyll!</a></p>
+        
+    </div>
+    <div class="nex">
+
+        
+        <p><strong>下一篇</strong> <a href="/2018/04/30/NGS.html">次代定序技術(Next Generation Sequencing)</a></p>
+        
+    </div>
+</div>
+
+
+        <h2 id="comments">Comments</h2>
+        
+
+
+
+
+
+    </div>
+    <button class="anchor"><i class="fa fa-anchor"></i></button>
+    <div class="right">
+        <div class="wrap">
+
+            <!-- Content -->
+            <div class="side content">
+                <div>
+                    Content
+                </div>
+                <ul id="content-side" class="content-ul">
+                    
+                    <li><a href="#comments">Comments</a></li>
+                </ul>
+            </div>
+            <!-- 其他div框放到这里 -->
+            <!-- <div class="side">bbbb</div> -->
+        </div>
+    </div>
+</div>
+<script>
+/**
+ * target _blank
+ */
+(function() {
+    var aTags = document.querySelectorAll('article a:not([id])')
+    for (var i = 0; i < aTags.length; i++) {
+        aTags[i].setAttribute('target', '_blank')
+    }
+}());
+</script>
+<script src="/js/pageContent.js " charset="utf-8"></script>
+
+
+    <footer class="site-footer">
+
+
+    <div class="wrapper">
+
+        <p class="description">
+            
+        </p>
+        <p class="contact">
+            Contact me at: 
+            <a href="https://github.com/anthonyhtyao" title="GitHub"><i class="fa fa-github" aria-hidden="true"></i></a>  
+            <a href="mailto:hua-ting.yao@polytechnique.edu" title="email"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>        
+        </p>
+        <p class="power">
+            <span>
+                Site powered by <a href="https://jekyllrb.com/">Jekyll</a> & <a href="https://pages.github.com/">Github Pages</a>.
+            </span>
+            <span>
+                Theme designed by <a href="https://github.com/Gaohaoyang">HyG</a>.
+            </span>
+        </p>
+    </div>
+</footer>
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <div class="back-to-top">
+    <a href="#top" data-scroll>
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </a>
+</div>
+
+    <script src=" /js/main.js " charset="utf-8"></script>
+    <script src=" /js/smooth-scroll.min.js " charset="utf-8"></script>
+    <script type="text/javascript">
+      smoothScroll.init({
+        speed: 500, // Integer. How fast to complete the scroll in milliseconds
+        easing: 'easeInOutCubic', // Easing pattern to use
+        offset: 20, // Integer. How far to offset the scrolling anchor location in pixels
+      });
+    </script>
+    <!-- <script src=" /js/scroll.min.js " charset="utf-8"></script> -->
+  </body>
+
+</html>

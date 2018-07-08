@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2018-07-08T15:18:20+02:00</updated><id>http://localhost:4000/</id><title type="html">ATCG &amp;lt;-&amp;gt; 1/0</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+</subtitle><entry><title type="html">次代定序技術(Next Generation Sequencing)</title><link href="http://localhost:4000/2018/04/30/NGS.html" rel="alternate" type="text/html" title="次代定序技術(Next Generation Sequencing)" /><published>2018-04-30T00:00:00+02:00</published><updated>2018-04-30T00:00:00+02:00</updated><id>http://localhost:4000/2018/04/30/NGS</id><content type="html" xml:base="http://localhost:4000/2018/04/30/NGS.html">&lt;p&gt;次代定序技術 (Next Generation Sequencing) 為 Illumina 定序、SOLiD 定序等等新一代定序技術的統稱，
+與過往 Sanger 定序相比，能夠以較少的時間、金錢完成大量的序列定序。
+新技術的出現大幅影響分子生物學的研究，許多相應的應用因而相繼出現：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;DNA-seq
+    &lt;ul&gt;
+      &lt;li&gt;目標外顯子(100 kb)&lt;/li&gt;
+      &lt;li&gt;全部外顯子(30 Mb)&lt;/li&gt;
+      &lt;li&gt;整段序列(3 Gb)&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;RNA-seq&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;ChiP-seq&lt;/p&gt;
+
+    &lt;p&gt;結合&lt;a href=&quot;https://zh.wikipedia.org/zh-tw/%E6%9F%93%E8%89%B2%E8%B4%A8%E5%85%8D%E7%96%AB%E6%B2%89%E6%B7%80-%E6%B5%8B%E5%BA%8F&quot;&gt;染色質免疫沈澱&lt;/a&gt;(Chromatin Immunoprecipitation)，可用來辨識蛋白質在基因上的結合位置。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Hi-C&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;傳統的人工分析不再足以應付如此龐大的資料，資訊科學逐漸在生物學中得到重視。
+本文章將簡單介紹資訊科學如何幫助處理和分析定序的資料，主要著重於 RNA-seq 和 DNA-seq 這兩個技術。
+首先我們會介紹這兩個技術的應用以及後續分析的流程，接著會分別簡短描述每一個步驟所用到的工具，會在之後的文章詳細介紹各個工具，最後會列出一些常用的檔案格式。&lt;/p&gt;
+
+&lt;h1 id=&quot;rna-seq&quot;&gt;RNA-seq&lt;/h1&gt;
+
+&lt;h2 id=&quot;定序品質管理quality-control&quot;&gt;定序品質管理(Quality control)&lt;/h2&gt;
+
+&lt;p&gt;定序的品質主要基於定序分數(Phred quality score)，但也會根據序列片段的長度分佈、GC%、重複定序序列等等依據。
+定序品質分數$Q$越高代表該鹼基定序結果準確率越高，
+$Q = -\log P$，其中 $P$ 代表定序結果錯誤的機率。
+根據不同的技術，有時在定序序列尾端會有一小段已知的序列，稱作adapter，在定序時被用來固定序列片段，也被用來在PCR中增加特定序列。因此在定序完成後，需要將adapter從片段序列中剪去，已知的軟體有 &lt;strong&gt;Cutadapt&lt;/strong&gt; 和 &lt;strong&gt;Trimmomatic&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;分析品質分數的方法主要分成兩種，通常使用 &lt;strong&gt;Fastqc&lt;/strong&gt; 視覺化：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用箱形圖(Box Whisker plot)呈現每一個位置鹼基定序分數的分佈情況，一般情況下，位於後端的鹼基會有較低的定序準確率，可以使用 &lt;strong&gt;FastqTrimmer&lt;/strong&gt; 去除尾端低品質序列&lt;/li&gt;
+  &lt;li&gt;利用片段序列平均分數的分佈(mean quality distribution)來尋找是否有一批片段序列準確率集體偏低&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;序列比對mappingalignment&quot;&gt;序列比對(Mapping/Alignment)&lt;/h2&gt;
+
+&lt;p&gt;序列比對：在合理的誤差範圍內，找到每個片段序列所對應的所有基因座(locus)&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;BLAST&lt;/strong&gt; 是一個常見的序列比對工具，使用$k$-mer&lt;/li&gt;
+  &lt;li&gt;Suffix array&lt;/li&gt;
+  &lt;li&gt;Burrow-Wheeler Transform(BWT) 壓縮版的suffix array，有許多工具建立在此方法上，其中以 &lt;strong&gt;Bowti&lt;/strong&gt; 最為知名&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在RNA-seq分析中，由於mRNA指包含外顯子的序列，所以序列比對工具比需具有處理內顯子存在的可能性，也就是說要能夠將得到的片段序列分段並對應到數個外顯子。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;TopHat&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;STAR&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;表現結果expression&quot;&gt;表現結果(Expression)&lt;/h2&gt;
+
+&lt;p&gt;做完序列比對後，接著要分析基因的表現量，最直覺的方法就是數有多少片段序列對到基因，但現實情況卻不是如此簡單&lt;/p&gt;
+
+&lt;p&gt;在開始之前需要先將比對結果索引化(indexing)，將比對結果依照位置排序並建立位置表，儲存於&lt;a href=&quot;#bai&quot;&gt;.BAI&lt;/a&gt;中&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;featureCounts&lt;/strong&gt; 回傳每個特徵所對應到的片段序列數量，但是基於featureCount的方法無法準確表示出，在兩個不同情況下，表現量的改變&lt;/p&gt;
+
+&lt;p&gt;近幾年，一些不使用比對的方法被提了出來，像是 &lt;strong&gt;Sailfish&lt;/strong&gt;, &lt;strong&gt;Salmon&lt;/strong&gt; 還有 &lt;strong&gt;Kallisto&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;表現差異分析differential-expression-analyses&quot;&gt;表現差異分析(Differential expression analyses)&lt;/h2&gt;
+
+&lt;p&gt;假設我們想要知道在兩個不同的條件下，哪些基因有不一樣的表現，因此分別在這兩個條件下做了定序，得到了所有基因的表現量$Q1$和$Q2$，&lt;/p&gt;
+
+&lt;p&gt;第一步要先將得到的表現量正規化，因為對應到的片段序列數量跟基因長度以及整體片段序列數量有關&lt;/p&gt;
+
+&lt;p&gt;假設：大多數的基因其表現量沒有改變，$\log FC = 0$&lt;/p&gt;
+
+&lt;p&gt;但是$\log FC$不能作為唯一的依據，一個表現量標準差很大的基因可以和一個標準差很小的基因擁有一樣的$\log FC$值。其中一個解決方法是使用student參數$t = \displaystyle \frac{\log FC}{\frac{SD}{\sqrt{n}}}$， R package &lt;strong&gt;LIMMA&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;在統計學中，$p$-值常被用作評判的標準。在此分析中可以假設片段序列對應到一個基因的數量符合某個統計模型，並藉此計算$p$-值。給定一條片段序列跟一個基因，假設兩者成功比對的機率為$p$，那麼一個基因的對應片段序列數量會成二項分佈$B(n,p)$，其中$n$是總片段序列數量。當$n$夠大以及$p$夠小時，會接近Poisson分佈。此模型的優點是只有一個參數$\lambda$，而其特性為期望值等於方差(variance)，$E(X)=V(X)=\lambda$。跟實際情況相比，可以發現，此模型會低估高表現基因的方差，有幾個方法可以來修正此誤差：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;加入常數項，$\nu = \mu + \alpha\mu^2$，package &lt;strong&gt;DESeq&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;加入區域遞迴，$\nu = \mu + f(\mu^2)$， package &lt;strong&gt;edgeR&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;dna-seq&quot;&gt;DNA-seq&lt;/h2&gt;
+
+&lt;p&gt;用於尋找基因體上的差異：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Genetic constitution. GWA studies, 1000 Genome project&lt;/li&gt;
+  &lt;li&gt;體基因：比對癌症患者正常細胞和癌細胞基因，找尋變異、突變，有100-10000單核苷酸差異(SNV)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;流程：定序後資料(Fastq) -&amp;gt; 跟目標序列比對，得到Sam/Bam -&amp;gt; 尋找變異(Variant calling)，以VCF格式輸出&lt;/p&gt;
+
+&lt;p&gt;開始的前製資料處理與RNA-seq相同，品質管理、序列比對。&lt;/p&gt;
+
+&lt;h3 id=&quot;交叉比對&quot;&gt;交叉比對&lt;/h3&gt;
+&lt;p&gt;做完比對後，需要將得到的結果與已知的基因體位製作交叉比對，通常使用&lt;a href=&quot;https://bedtools.readthedocs.io/en/latest/content/tools/intersect.html&quot;&gt;bedtools&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;重新對準序列realignment&quot;&gt;重新對準序列(realignment)&lt;/h3&gt;
+
+&lt;p&gt;序列比對工具會傾向引入單核酸差異而不會選擇插入/刪除(indel)鹼基，進而產生大量的假單核酸差異(false positive)，所以必須在插入/刪除位置附近重新比對序列。常見的重新排列位置有：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;在第一次比對中，已有插入/刪除的地方&lt;/li&gt;
+  &lt;li&gt;明顯意味存在插入/刪除的位置，像是大量序列存在單核酸差異的地方&lt;/li&gt;
+  &lt;li&gt;已知存在插入/刪除的位置(dbSNP，1000Genomes)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;常見的方法是先使用 &lt;strong&gt;GATK RealignerTargetCreator&lt;/strong&gt; 辨識出需要重新比對的區域，再使用 &lt;strong&gt;GATK IndelRealigner&lt;/strong&gt; 做重新對準。&lt;/p&gt;
+
+&lt;p&gt;接著要來準備給variant calling的資料，使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;samtools mpileup&lt;/code&gt;通常為Pileup格式，每一行代表一個位置的鹼基配對結果，每一行有六欄：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;染色體位置&lt;/li&gt;
+  &lt;li&gt;鹼基所在位置&lt;/li&gt;
+  &lt;li&gt;參考鹼基&lt;/li&gt;
+  &lt;li&gt;比對片段序列數量(depth)&lt;/li&gt;
+  &lt;li&gt;比對結果&lt;/li&gt;
+  &lt;li&gt;比對品質&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;相關檔案格式&quot;&gt;相關檔案格式&lt;/h1&gt;
+
+&lt;h5 id=&quot;fasta&quot;&gt;&lt;strong&gt;FASTA&lt;/strong&gt;&lt;/h5&gt;
+&lt;p&gt;簡易序列儲存格式，每條序列的第一行為編號 (ID，首字元為 &amp;lt; )，
+第二行以後為序列。
+一個檔案裡可以有多條序列。&lt;/p&gt;
+
+&lt;h5 id=&quot;fastq&quot;&gt;&lt;strong&gt;FASTQ&lt;/strong&gt;&lt;/h5&gt;
+
+&lt;p&gt;用於儲存定序結果，通常為序列片段 (read)，每一條序列片段 (read) 包含四行資訊，分別為：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;序列編號(ID)，首字元為@&lt;/li&gt;
+  &lt;li&gt;序列&lt;/li&gt;
+  &lt;li&gt;序列編號(非必須)，首字元為+&lt;/li&gt;
+  &lt;li&gt;每個鹼基的定序品質分數&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;sam-sequence-alignment-map&quot;&gt;&lt;strong&gt;SAM&lt;/strong&gt; (Sequence Alignment Map)&lt;/h5&gt;
+
+&lt;p&gt;用於表示跟參考序列比對後的結果，總共有11欄：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;QNAME&lt;/td&gt;
+      &lt;td&gt;String&lt;/td&gt;
+      &lt;td&gt;序列 Id&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;FLAG&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt;二進位標籤組合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;RNAME&lt;/td&gt;
+      &lt;td&gt;String&lt;/td&gt;
+      &lt;td&gt;參考序列 Id&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;POS&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt;比對在參考序上的起始位置，起始為1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;MAPQ&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt;序列比對品質，$-10\log P$&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;CIGAR&lt;/td&gt;
+      &lt;td&gt;String&lt;/td&gt;
+      &lt;td&gt;CIGAR String，用來表示序列比對詳細結果&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;RNEXT&lt;/td&gt;
+      &lt;td&gt;String&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;PNEXT&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;TLEN&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;SEQ&lt;/td&gt;
+      &lt;td&gt;String&lt;/td&gt;
+      &lt;td&gt;比對的完整序列&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;QUAL&lt;/td&gt;
+      &lt;td&gt;Int&lt;/td&gt;
+      &lt;td&gt;比對序列定序品質分數&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5 id=&quot;bam&quot;&gt;&lt;strong&gt;BAM&lt;/strong&gt;&lt;/h5&gt;
+
+&lt;p&gt;二進位版本的 SAM，使用 &lt;strong&gt;SAMtools&lt;/strong&gt; 將兩者轉換&lt;/p&gt;
+
+&lt;h5 id=&quot;bai&quot;&gt;&lt;strong&gt;BAI&lt;/strong&gt;&lt;/h5&gt;
+
+&lt;p&gt;索引化的 BAM&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;samtools sort sample.bam –o sample_sorted.bam
+samtools index sample_sorted.bam
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h5 id=&quot;bed&quot;&gt;&lt;strong&gt;bed&lt;/strong&gt;&lt;/h5&gt;
+
+&lt;p&gt;用於描述基因體中的特徵(feature)，一行代表一個特徵，共有3-12欄資訊，其中前三欄為必填&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chrom&lt;/td&gt;
+      &lt;td&gt;特徵所在染色體&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chromStart&lt;/td&gt;
+      &lt;td&gt;特徵開始位置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;chromEnd&lt;/td&gt;
+      &lt;td&gt;特徵結束位置&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;需要注意的是，在bed格式中，第一個鹼基位置是0，且特徵長度 = chromEnd - chromStart&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;GFF&lt;/strong&gt;(General Feature Format)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;GTF&lt;/strong&gt;(General Transfer Format)&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;VCF&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;用於紀錄 variant call 的結果，分為header和body。header的每一行開始於##，紀錄檔案相關資訊&lt;/p&gt;</content><author><name>htyao</name></author><summary type="html">次代定序技術 (Next Generation Sequencing) 為 Illumina 定序、SOLiD 定序等等新一代定序技術的統稱， 與過往 Sanger 定序相比，能夠以較少的時間、金錢完成大量的序列定序。 新技術的出現大幅影響分子生物學的研究，許多相應的應用因而相繼出現：</summary></entry><entry><title type="html">RNA Design</title><link href="http://localhost:4000/2018/04/04/Intro-of-RNADesign.html" rel="alternate" type="text/html" title="RNA Design" /><published>2018-04-04T00:00:00+02:00</published><updated>2018-04-04T00:00:00+02:00</updated><id>http://localhost:4000/2018/04/04/Intro-of-RNADesign</id><content type="html" xml:base="http://localhost:4000/2018/04/04/Intro-of-RNADesign.html">&lt;p&gt;寫於一切之前, 此文章內容主要基於2017年發表在 &lt;em&gt;Briefings in Bioinformatics&lt;/em&gt; 的 RNA Design review &lt;a href=&quot;#Churkin2017&quot;&gt;(Churkin et al., 2017)&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The class of ill-posed problems includes many classical mathematical problems and, most significantly, that such problems have important applications. 
+– Andrey Nikolayevich Tikhonov&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;就如同多數的逆問題, 逆RNA折疊 (inverse RNA folding, or RNA Design) 並不符合&lt;a href=&quot;https://zh.wikipedia.org/zh-tw/%E9%81%A9%E5%AE%9A%E6%80%A7%E5%95%8F%E9%A1%8C&quot;&gt;適定性問題&lt;/a&gt;的定義,也因此充滿挑戰性。給定一條RNA序列,找到其最低能量二維折疊複雜度是 $O(n^3)$,反過來卻不是如此簡單,給定一個RNA二維結構,我們想要設計一條RNA序列,使得其最低能量折疊符合給定的結構。一個直覺又暴力的方法是找出所有可能序列的折疊,期待其中一個符合我們想要的，假設要設計一條長度$n$的RNA序列,每個位置都有四種可能(A,U,C,G),也就是說總共有$4^n$條可能序列。當然考慮到成對的鹼基,我們可以近一步的減少這個數量,假設其中有m ($2m\leq n$)個鹼基對 (A-U, C-G, U-G),可惜的是還剩下$6^m4^{n-2m}$條可能的RNA序列。很顯然,在目前的技術之下,暴力解不是一個可行的方法。&lt;/p&gt;
+
+&lt;p&gt;逆RNA折疊被認為在未來的合成生物學(synthetic biology)和RNA奈米結構領域中，扮演重要的角色。同時也被發現可以用來尋找非編碼核糖核酸 (non-coding RNA)。除此之外，逆RNA折疊和理論演化學也息息相關，RNA序列與結構常被用作研究模型。&lt;/p&gt;
+
+&lt;p&gt;一個常見的逼近方法是先生成一段RNA序列，稱作種子序列，接著，藉由適當地改變序列，使種子序列在局部(local)空間中隨機漫步(Random Walk)，並使用現成的RNA折疊工具來逼近最終序列。此方法由被收在&lt;a href=&quot;https://www.tbi.univie.ac.at/RNA/&quot;&gt;ViennaRNA&lt;/a&gt;的 &lt;strong&gt;RNAinverse&lt;/strong&gt; 首次提出。之後的 &lt;strong&gt;INFO-RNA&lt;/strong&gt;， &lt;strong&gt;NUPACK&lt;/strong&gt; 等也是建立在類似的方法之上。除此之外，遺傳算法(genetic algorith)，約束規劃(constaint programming)以及螞蟻算法(ant colony optimization)都曾被使用來解決此問題。&lt;/p&gt;
+
+&lt;p&gt;大多數的逆RNA折疊軟體中，並不考慮&lt;a href=&quot;https://zh.wikipedia.org/zh-tw/%E5%81%87%E7%B5%90%E7%B5%90%E6%A7%8B&quot;&gt;假結結構&lt;/a&gt;(pseudoknot)的存在。假結結構是一種RNA二級結構，髮夾結構(hairpin loop)的其中一股嵌入另一個髮夾結構之中。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/PseudoknotFold.svg/307px-PseudoknotFold.svg.png&quot; alt=&quot;假結結構的產生&quot; /&gt;&lt;/p&gt;</content><author><name>htyao</name></author><summary type="html">寫於一切之前, 此文章內容主要基於2017年發表在 Briefings in Bioinformatics 的 RNA Design review (Churkin et al., 2017)</summary></entry><entry><title type="html">Welcome to Jekyll!</title><link href="http://localhost:4000/2017/09/18/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2017-09-18T17:10:52+02:00</published><updated>2017-09-18T17:10:52+02:00</updated><id>http://localhost:4000/2017/09/18/welcome-to-jekyll</id><content type="html" xml:base="http://localhost:4000/2017/09/18/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+
+&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+
+&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><author><name></name></author><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry></feed>
